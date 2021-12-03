@@ -1,6 +1,4 @@
-package trash;
-
-public class FirstDay {
+public class day1 {
 
     public static void main(String[] args) {
         String input2 = "12\n" +

@@ -1,8 +1,6 @@
-package day2;
-
 import java.util.Arrays;
 
-public class SecondDay {
+public class day2 {
 
     public static void main(String[] args) {
         String input = "forward 2\n" +
