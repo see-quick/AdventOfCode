@@ -1,5 +1,5 @@
 package advent.of.code;
 
-public class day4 {
+public class day8 {
     // no time for this... :D
 }
