@@ -1,3 +1,5 @@
+package advent.of.code;
+
 import java.util.Arrays;
 
 public class day2 {

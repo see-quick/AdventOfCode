@@ -1,3 +1,5 @@
+package advent.of.code;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
