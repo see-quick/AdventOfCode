@@ -161,6 +161,35 @@ public class day15 {
         return path;
     }
 
+    /**
+     * DFS based algorithm (very slow :D)
+     */
+    public static int minPathSum(int[][] grid) {
+        return dfs(0,0,grid);
+    }
+
+    public static int dfs(int i, int j, int[][] grid) {
+        if (i == grid.length - 1 && j == grid[0].length - 1) {
+            return grid[i][j];
+        }
+
+        if (i < grid.length - 1 && j < grid[0].length - 1) {
+            int r1 = grid[i][j] + dfs(i + 1, j, grid);
+            int r2 = grid[i][j] + dfs(i, j + 1, grid);
+            return Math.min(r1, r2);
+        }
+
+        if (i < grid.length - 1) {
+            return grid[i][j] + dfs(i + 1, j, grid);
+        }
+
+        if (j < grid[0].length - 1) {
+            return grid[i][j] + dfs(i, j + 1, grid);
+        }
+
+        return 0;
+    }
+
     public static void main(String[] args) {
         // I. parse input
         final String input = Utils.constructStringFromFile("day15.txt");
@@ -178,7 +207,6 @@ public class day15 {
         printMatrix(matrix);
 
         // III. run algorithm (A* or BFS.. and any Graph base algorithm)
-//        System.out.println(minCost(matrix, matrix.length - 1, matrix[0].length - 1) - matrix[0][0]);
         List<String> bestPath = findPath(matrix, 0, 0);
 
         System.out.println(bestPath);
@@ -192,6 +220,9 @@ public class day15 {
             minSum[0] += matrix[x][y];
         });
 
+        // using DFS
+        System.out.println(minPathSum(matrix) - matrix[0][0]);
+        // using BFS
         System.out.println(minSum[0]);
     }
 }
