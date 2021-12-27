@@ -47,6 +47,7 @@ public class day15 {
     }
 
     /**
+     * THIS WORKS BUT SLOW :D
      * Recursive greedy algorithm for find short sum path in 2d matrix @code{matrix}.
      * But this is not a good for matrix more than 10x100
      */
