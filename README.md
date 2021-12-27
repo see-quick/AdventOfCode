@@ -7,7 +7,7 @@
 |    1   	|  https://github.com/see-quick/AdventOfCode2021/blob/main/src/advent/of/code/day1.java |
 |   2  	| https://github.com/see-quick/AdventOfCode2021/blob/main/src/advent/of/code/day2.java |
 |    3   	|  https://github.com/see-quick/AdventOfCode2021/blob/main/src/advent/of/code/day3.java |
-|    4   	|  https://github.com/see-quick/AdventOfCode2021/blob/main/src/advent/of/code/day4.java |
+|    4   	|  ⏳😰🍻 |
 |    5   	|  https://github.com/see-quick/AdventOfCode2021/blob/main/src/advent/of/code/day5.java |
 |    6   	|  https://github.com/see-quick/AdventOfCode2021/blob/main/src/advent/of/code/day6.java |
 |    7   	|  https://github.com/see-quick/AdventOfCode2021/blob/main/src/advent/of/code/day7.java |
