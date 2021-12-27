@@ -16,3 +16,12 @@
 |    10   	|  https://github.com/see-quick/AdventOfCode2021/blob/main/src/advent/of/code/day10.java |
 |    11   	|  https://github.com/see-quick/AdventOfCode2021/blob/main/src/advent/of/code/day11.java |
 |    12   	|  https://github.com/see-quick/AdventOfCode2021/blob/main/src/advent/of/code/day12.java |
+|    13   	|  https://github.com/see-quick/AdventOfCode2021/blob/main/src/advent/of/code/day13.java |
+|    14   	|  https://github.com/see-quick/AdventOfCode2021/blob/main/src/advent/of/code/day14.java |
+|    15   	|  https://github.com/see-quick/AdventOfCode2021/blob/main/src/advent/of/code/day15.java |
+|    16   	|  ⏳😰🍻 |
+|    17   	|  ⏳😰🍻 |
+|    18   	| ⏳😰🍻 |
+|    19   	| ⏳😰🍻 |
+|    20   	| ⏳😰🍻 |
+
