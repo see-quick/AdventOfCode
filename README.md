@@ -24,4 +24,4 @@
 |    18   	| ⏳😰🍻 |
 |    19   	| ⏳😰🍻 |
 |    20   	| ⏳😰🍻 |
-
+|    21   	|  https://github.com/see-quick/AdventOfCode2021/blob/main/src/advent/of/code/day21.java |
