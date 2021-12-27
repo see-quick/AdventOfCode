@@ -160,8 +160,6 @@ public class day15 {
         return path;
     }
 
-
-
     public static void main(String[] args) {
         // I. parse input
         final String input = Utils.constructStringFromFile("day15.txt");
