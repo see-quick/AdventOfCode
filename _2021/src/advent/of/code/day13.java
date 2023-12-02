@@ -1,6 +1,5 @@
 package advent.of.code;
 
-
 public class day13 {
 
     private static int width = Integer.MIN_VALUE;
