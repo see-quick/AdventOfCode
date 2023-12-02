@@ -29,5 +29,3 @@ Tracking my progress in Advent of Code with links to the source code for each da
 |        23         |                                                    --                                                    |
 |        24         |                                                    --                                                    |
 |        25         |                                                    --                                                    |
-
-Replace `username` with your GitHub username and ensure the links point to the correct locations in your repository. Use the emojis ⏳😰🍻 for days you're still working on or haven't started yet.
