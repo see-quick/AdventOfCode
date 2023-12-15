@@ -13,7 +13,7 @@ Tracking my progress in Advent of Code with links to the source code for each da
 |         7         |                                                   🧐💩                                                   |
 |         8         | [Day 6 Solution](https://github.com/see-quick/AdventOfCode/blob/main/_2023/src/advent/of/code/day8.java) |
 |         9         | [Day 9 Solution](https://github.com/see-quick/AdventOfCode/blob/main/_2023/src/advent/of/code/day9.java) |
-|        10         |                                                    --                                                    |
+|        10         |                                                   🧐💩                                                   |
 |        11         |                                                    --                                                    |
 |        12         |                                                    --                                                    |
 |        13         |                                                    --                                                    |
