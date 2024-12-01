@@ -6,10 +6,10 @@ import java.io.IOException;
 
 public class Utils {
 
-    public static String constructStringFromFile(final String fileName) {
+    public static String constructStringFromFile(final String fileName, final String path) {
         String result = null;
 
-        try(BufferedReader br = new BufferedReader(new FileReader("src/advent/of/code/" + fileName))) {
+        try(BufferedReader br = new BufferedReader(new FileReader(path))) {
             StringBuilder sb = new StringBuilder();
             String line = br.readLine();
 
@@ -24,5 +24,9 @@ public class Utils {
             e.printStackTrace();
         }
         return result;
+    }
+
+    public static String constructStringFromFile(final String fileName) {
+        return constructStringFromFile("src/advent/of/code/" + fileName);
     }
 }
