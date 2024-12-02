@@ -1,13 +1,12 @@
 package advent.of.code;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
 public class Day1 {
     public static void main(String[] args) {
-        final List<String> lines = DataLoader.loadDataFromFile("2024/src/main/java/advent/of/code/day1.txt");
+        final List<String> lines = DataLoader.loadDataFromFile("_2024/src/main/java/advent/of/code/day1.txt");
 
         List<String> leftSide = new LinkedList<>();
         List<String> rightSide = new LinkedList<>();
@@ -28,16 +27,10 @@ public class Day1 {
             int left = Integer.parseInt(leftSide.get(i));
             int right = Integer.parseInt(rightSide.get(i));
 
-            if (left > right) {
-                distance += left - right;
-            } else if (right > left) {
-                distance += right - left;
-            } else {
-                // numbers are equal not need to do anything more.. ;)
-            }
+            distance += Math.abs(left - right);
         }
 
-
+        // 1223326
         System.out.println(distance);
     }
 }
