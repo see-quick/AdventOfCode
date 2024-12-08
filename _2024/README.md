@@ -11,7 +11,7 @@ Tracking my progress in Advent of Code with links to the source code for each da
 |   5    | [Day 5 Solution](https://github.com/see-quick/AdventOfCode/blob/main/_2024/src/main/java/advent/of/code/Day5.java) |
 |   6    | [Day 6 Solution](https://github.com/see-quick/AdventOfCode/blob/main/_2024/src/main/java/advent/of/code/Day6.java) |
 |   7    | [Day 7 Solution](https://github.com/see-quick/AdventOfCode/blob/main/_2024/src/main/java/advent/of/code/Day7.java) |
-|   8    |                                                                                                                    |
+|   8    | [Day 8 Solution](https://github.com/see-quick/AdventOfCode/blob/main/_2024/src/main/java/advent/of/code/Day8.java) |
 |   9    |                                                                                                                    |
 |   10   |                                                                                                                    |
 |   11   |                                                                                                                    |
