@@ -1,11 +1,9 @@
 package advent.of.code;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 
@@ -82,6 +80,7 @@ public class Day10 {
             "30968745467654320112345210987610112345545430567856543234".toCharArray()
         };
 
+
         // algorithm desing:
         //    1 a. locate all trailheads (i.e., `0`) in the map
         //    1 b. locate all ends (i.e., `9`)?
@@ -123,11 +122,10 @@ public class Day10 {
         // There are 9 trailheads.
         // Considering the trailheads in reading order, they have scores of 5, 6, 5, 3, 1, 3, 5, 3, and 5.
         // Adding these scores together, the sum of the scores of all trailheads is 36.
-        // OKAY tried bi-directional...I have not been succesfull... :D
+        // OKAY tried bi-directional...I have not been succesful... :D
 
         // 1. Locate all trailheads (cells with '0')
-        List<int[]> trailheads = findCells(input, '0');
-        List<int[]> peaks = findCells(input, '9');
+        final List<int[]> trailheads = findTrailheads(input);
 
         // Directions for BFS (up, down, left, right)
         final int[][] dirs = {{1,0},{-1,0},{0,1},{0,-1}};
@@ -135,107 +133,54 @@ public class Day10 {
         final int cols = input[0].length;
         int totalScore = 0;
 
-        // Assign IDs to each peak for distinct tracking
-        Map<String,Integer> peakIdMap = new HashMap<>();
-        for (int i = 0; i < peaks.size(); i++) {
-            peakIdMap.put(peaks.get(i)[0] + "," + peaks.get(i)[1], i);
-        }
-
-        // downwardReachable[r][c] will store a set of peak IDs that can be reached from (r,c)
-        // if you move upward (i.e., from lower height to higher), but we compute it by going downward from peaks.
-        @SuppressWarnings("unchecked")
-        Set<Integer>[][] downwardReachable = new HashSet[rows][cols];
-        for (int r=0; r<rows; r++) {
-            for (int c=0; c<cols; c++) {
-                downwardReachable[r][c] = new HashSet<>();
-            }
-        }
-
-        // Multi-source BFS from all peaks "downwards" (9→8→7...).
-        // Actually, we start from each peak and move to any adjacent cell with height = currentHeight-1.
-        Queue<int[]> downQ = new LinkedList<>();
-        for (int i = 0; i < peaks.size(); i++) {
-            int[] p = peaks.get(i);
-            downwardReachable[p[0]][p[1]].add(i);
-            downQ.offer(new int[]{p[0], p[1], input[p[0]][p[1]] - '0'});
-        }
-
-        boolean[][] visitedDown = new boolean[rows][cols];
-        // Initially mark peaks as visited
-        for (int[] p : peaks) visitedDown[p[0]][p[1]] = true;
-
-        while (!downQ.isEmpty()) {
-            int[] cur = downQ.poll();
-            int r = cur[0], c = cur[1], h = cur[2];
-
-            for (int[] d : dirs) {
-                int nr = r + d[0], nc = c + d[1];
-                if (nr<0||nr>=rows||nc<0||nc>=cols) continue;
-                int nh = input[nr][nc]-'0';
-                // We are going downward in reverse, so look for nh == h-1
-                if (nh == h-1) {
-                    // Merge peak sets
-                    boolean updated = downwardReachable[nr][nc].addAll(downwardReachable[r][c]);
-                    if (updated) {
-                        // We found new information, so continue BFS
-                        if (!visitedDown[nr][nc]) {
-                            visitedDown[nr][nc] = true;
-                            downQ.offer(new int[]{nr,nc,nh});
-                        }
-                    }
-                }
-            }
-        }
-
-        // Now downwardReachable[][] has info about which peaks can be reached from each cell.
-        // For each trailhead, run the original BFS upward (0→1→2...) and find reachable peaks by intersecting sets
+        // 2. For each trailhead, run BFS to find all reachable '9'
         for (int[] start : trailheads) {
-            boolean[][] visitedUp = new boolean[rows][cols];
-            visitedUp[start[0]][start[1]] = true;
+            Set<String> visited = new HashSet<>();
+            Set<String> found9 = new HashSet<>();
+            Queue<int[]> queue = new LinkedList<>();
+            queue.offer(new int[]{start[0], start[1], 0});
 
-            Queue<int[]> upQ = new LinkedList<>();
-            upQ.offer(new int[]{start[0], start[1], input[start[0]][start[1]] - '0'});
+            visited.add(start[0] + "," + start[1]);
 
-            Set<Integer> foundPeaks = new HashSet<>();
+            while (!queue.isEmpty()) {
+                int[] position = queue.poll(); // position [x, y]
+                int x = position[0], y = position[1], height = input[x][y] - '0';
 
-            while(!upQ.isEmpty()) {
-                int[] cur = upQ.poll();
-                int r = cur[0], c = cur[1], h = cur[2];
-
-                // Add any peaks known reachable from this cell
-                foundPeaks.addAll(downwardReachable[r][c]);
-
-                // If we are at 9, no need to go further
-                if (h == 9) continue;
+                if (height == 9) {
+                    found9.add(x + "," + y);
+                    continue; // we found 9 not need to continue
+                }
 
                 for (int[] d : dirs) {
-                    int nr = r+d[0], nc = c+d[1];
-                    if (nr<0||nr>=rows||nc<0||nc>=cols) continue;
-                    if (!visitedUp[nr][nc]) {
-                        int nh = input[nr][nc]-'0';
-                        if (nh == h+1) {
-                            visitedUp[nr][nc] = true;
-                            upQ.offer(new int[]{nr, nc, nh});
+                    int nextX = x + d[0], nextY = y + d[1];
+                    if (nextX < 0 || nextX >= rows || nextY < 0 || nextY >= cols) continue;
+                    if (!visited.contains(nextX + "," + nextY)) {
+                        int nh = input[nextX][nextY] - '0';
+
+                        // Check for inextYrease (but only just +1) if so just add to queue
+                        if (nh == height + 1) {
+                            visited.add(nextX + "," + nextY);
+                            queue.offer(new int[]{nextX, nextY});
                         }
                     }
                 }
             }
 
-            totalScore += foundPeaks.size();
+            totalScore += found9.size();
         }
 
         System.out.println(totalScore);
     }
 
-    public static List<int[]> findCells(char[][] map, char target) {
-        List<int[]> cells = new ArrayList<>();
-        for (int i=0; i<map.length; i++) {
-            for (int j=0; j<map[0].length; j++) {
-                if (map[i][j] == target) {
-                    cells.add(new int[]{i,j});
+    public static List<int[]> findTrailheads(char[][] map) {
+        final List<int[]> trailheads = new ArrayList<>();
+        for (int i = 0; i < map.length; i++) {
+            for (int j = 0; j < map[0].length; j++) {
+                if (map[i][j] == '0') {
+                    trailheads.add(new int[]{i, j});
                 }
             }
         }
-        return cells;
+        return trailheads;
     }
 }
