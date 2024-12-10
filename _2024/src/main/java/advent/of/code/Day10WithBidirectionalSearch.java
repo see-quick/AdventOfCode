@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 
-public class Day10 {
+public class Day10WithBidirectionalSearch {
 
     public static void main(String[] args) {
         final char[][] mini_input = {
@@ -123,20 +123,20 @@ public class Day10 {
         // There are 9 trailheads.
         // Considering the trailheads in reading order, they have scores of 5, 6, 5, 3, 1, 3, 5, 3, and 5.
         // Adding these scores together, the sum of the scores of all trailheads is 36.
-        // OKAY tried bi-directional...I have not been succesfull... :D
+        // OKAY tried bi-directional...I have not been succesful... :D
 
         // 1. Locate all trailheads (cells with '0')
         List<int[]> trailheads = findCells(input, '0');
         List<int[]> peaks = findCells(input, '9');
 
         // Directions for BFS (up, down, left, right)
-        final int[][] dirs = {{1,0},{-1,0},{0,1},{0,-1}};
+        final int[][] dirs = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
         final int rows = input.length;
         final int cols = input[0].length;
         int totalScore = 0;
 
         // Assign IDs to each peak for distinct tracking
-        Map<String,Integer> peakIdMap = new HashMap<>();
+        Map<String, Integer> peakIdMap = new HashMap<>();
         for (int i = 0; i < peaks.size(); i++) {
             peakIdMap.put(peaks.get(i)[0] + "," + peaks.get(i)[1], i);
         }
@@ -145,8 +145,8 @@ public class Day10 {
         // if you move upward (i.e., from lower height to higher), but we compute it by going downward from peaks.
         @SuppressWarnings("unchecked")
         Set<Integer>[][] downwardReachable = new HashSet[rows][cols];
-        for (int r=0; r<rows; r++) {
-            for (int c=0; c<cols; c++) {
+        for (int r = 0; r < rows; r++) {
+            for (int c = 0; c < cols; c++) {
                 downwardReachable[r][c] = new HashSet<>();
             }
         }
@@ -170,17 +170,17 @@ public class Day10 {
 
             for (int[] d : dirs) {
                 int nr = r + d[0], nc = c + d[1];
-                if (nr<0||nr>=rows||nc<0||nc>=cols) continue;
-                int nh = input[nr][nc]-'0';
+                if (nr < 0 || nr >= rows || nc < 0 || nc >= cols) continue;
+                int nh = input[nr][nc] - '0';
                 // We are going downward in reverse, so look for nh == h-1
-                if (nh == h-1) {
+                if (nh == h - 1) {
                     // Merge peak sets
                     boolean updated = downwardReachable[nr][nc].addAll(downwardReachable[r][c]);
                     if (updated) {
                         // We found new information, so continue BFS
                         if (!visitedDown[nr][nc]) {
                             visitedDown[nr][nc] = true;
-                            downQ.offer(new int[]{nr,nc,nh});
+                            downQ.offer(new int[]{nr, nc, nh});
                         }
                     }
                 }
@@ -198,7 +198,7 @@ public class Day10 {
 
             Set<Integer> foundPeaks = new HashSet<>();
 
-            while(!upQ.isEmpty()) {
+            while (!upQ.isEmpty()) {
                 int[] cur = upQ.poll();
                 int r = cur[0], c = cur[1], h = cur[2];
 
@@ -209,11 +209,11 @@ public class Day10 {
                 if (h == 9) continue;
 
                 for (int[] d : dirs) {
-                    int nr = r+d[0], nc = c+d[1];
-                    if (nr<0||nr>=rows||nc<0||nc>=cols) continue;
+                    int nr = r + d[0], nc = c + d[1];
+                    if (nr < 0 || nr >= rows || nc < 0 || nc >= cols) continue;
                     if (!visitedUp[nr][nc]) {
-                        int nh = input[nr][nc]-'0';
-                        if (nh == h+1) {
+                        int nh = input[nr][nc] - '0';
+                        if (nh == h + 1) {
                             visitedUp[nr][nc] = true;
                             upQ.offer(new int[]{nr, nc, nh});
                         }
@@ -229,10 +229,10 @@ public class Day10 {
 
     public static List<int[]> findCells(char[][] map, char target) {
         List<int[]> cells = new ArrayList<>();
-        for (int i=0; i<map.length; i++) {
-            for (int j=0; j<map[0].length; j++) {
+        for (int i = 0; i < map.length; i++) {
+            for (int j = 0; j < map[0].length; j++) {
                 if (map[i][j] == target) {
-                    cells.add(new int[]{i,j});
+                    cells.add(new int[]{i, j});
                 }
             }
         }
