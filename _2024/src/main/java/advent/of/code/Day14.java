@@ -26,6 +26,12 @@ public class Day14 {
                 y += h;
         }
 
+        // for part2
+        void move() {
+            this.x += this.vx;
+            this.y += this.vy;
+        }
+
         @Override
         public String toString() {
             return "Robot{" +
@@ -145,6 +151,10 @@ public class Day14 {
 //      (this is for day14_mini.txt  final int width=11, height=7, time=100;
         final int width=101, height=103, time=100;
 
+        part1(width, height, time, robots);
+    }
+
+    public static void part1(int width, int height, int time, List<Robot> robots) {
         // Run simulation
         for(int t = 0; t < time; t++){
             for(Robot r: robots) r.move(width, height);
