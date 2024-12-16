@@ -2,8 +2,12 @@ package advent.of.code;
 
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.PriorityQueue;
+import java.util.Queue;
+import java.util.Set;
 
 /**
  * The ReindeerMaze `Day16` solves the problem of finding the lowest score
@@ -56,6 +60,11 @@ public class Day16 {
         // Initialize the start position, facing East (direction 1)
         dist[sr][sc][1]=0;
 
+//        part1(sr, sc, dist, er, ec, H, W, lines);
+        part2(sr, sc, dist, er, ec, H, W, lines);
+    }
+
+    private static void part1(int sr, int sc, long[][][] dist, int er, int ec, int H, int W, List<String> lines) {
         // Priority queue for Dijkstra's algorithm (min-heap)
         PriorityQueue<long[]> pq = new PriorityQueue<>(Comparator.comparingLong(a->a[0]));
         pq.add(new long[]{0,sr,sc,1});
@@ -98,5 +107,110 @@ public class Day16 {
                 pq.add(new long[]{nd, nr, nc, d});
             }
         }
+    }
+
+    private static void part2(int sr, int sc, long[][][] dist, int er, int ec, int H, int W, List<String> lines) {
+        PriorityQueue<long[]> pq = new PriorityQueue<>(Comparator.comparingLong(a->a[0]));
+        pq.add(new long[]{0,sr,sc,1});
+
+        while(!pq.isEmpty()){
+            long[] cur = pq.poll();
+            long cd = cur[0];
+            int r = (int) cur[1];
+            int c = (int)cur[2];
+            int d = (int)cur[3];
+            if (cd>dist[r][c][d]) continue;
+
+            // If we reached E, continue until all distances are processed
+            if (r == er && c == ec) {
+                // Just continue to find all minimal dist states
+            }
+
+            // Turn left/right
+            for (int ndir = -1; ndir <= 1; ndir += 2) {
+                int dd = (d + ndir + 4) % 4;
+                long nd = cd + TURN_COST;
+                if (nd < dist[r][c][dd]) {
+                    dist[r][c][dd] = nd;
+                    pq.add(new long[]{nd,r,c,dd});
+                }
+            }
+
+            // Move forward
+            int nr = r + DR[d], nc=c+DC[d];
+            // check boundaries
+            if (nr < 0 || nr >= H || nc<0 || nc >= W || lines.get(nr).charAt(nc) == '#') continue;
+            long nd = cd + MOVE_COST;
+            if (nd<dist[nr][nc][d]) {
+                dist[nr][nc][d] = nd;
+                pq.add(new long[]{nd,nr,nc,d});
+            }
+        }
+
+        // Find minimal distance at E
+        long best = Long.MAX_VALUE;
+        for (int d = 0;d < 4; d++) {
+            best = Math.min(best, dist[er][ec][d]);
+        }
+
+        // Backtrack: find all tiles on best paths
+        boolean[][][] onBest = new boolean[H][W][4];
+        Queue<int[]> queue = new LinkedList<>();
+        // Start from end states that have the minimal cost
+        for (int d = 0; d < 4; d++) {
+            if (dist[er][ec][d] == best) {
+                onBest[er][ec][d] = true;
+                queue.offer(new int[]{er,ec,d});
+            }
+        }
+
+        while(!queue.isEmpty()){
+            int[] cur = queue.poll();
+            int r = cur[0], c = cur[1], d = cur[2];
+
+            // Backwards: from this state, which states can lead here on a best path?
+
+            // Check moves that would have led here by moving forward in some direction
+            // If we came from a tile behind us, dist(prev) + MOVE_COST = dist[current]
+            int pr = r-DR[d], pc = c-DC[d];
+            if (pr >= 0 && pr < H && pc >= 0 && pc < W && lines.get(pr).charAt(pc) != '#') {
+                // If moving forward from (pr,pc,d) leads here:
+                if (dist[pr][pc][d] + MOVE_COST == dist[r][c][d]) {
+                    if (!onBest[pr][pc][d]) {
+                        onBest[pr][pc][d] = true;
+                        queue.offer(new int[]{pr,pc,d});
+                    }
+                }
+            }
+
+            // Check rotations: we might have turned into direction d at (r,c)
+            // If we turned from direction dd to d, dist(r,c,dd)+TURN_COST=dist(r,c,d)
+            for (int ndir = -1; ndir <= 1; ndir += 2) {
+                int dd=(d-ndir+4)%4; // opposite direction of turning
+                if (dist[r][c][dd] + TURN_COST == dist[r][c][d]) {
+                    if (!onBest[r][c][dd]) {
+                        onBest[r][c][dd] = true;
+                        queue.offer(new int[]{r,c,dd});
+                    }
+                }
+            }
+        }
+
+        // Count how many distinct tiles have at least one direction on a best path
+        Set<String> bestTiles = new HashSet<>();
+        for (int r = 0; r < H; r++) {
+            for (int c = 0; c < W; c++) {
+                if (lines.get(r).charAt(c) != '#') {
+                    for (int d = 0; d < 4; d++) {
+                        if (onBest[r][c][d]) {
+                            bestTiles.add(r+","+c);
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
+        System.out.println(bestTiles.size());
     }
 }
