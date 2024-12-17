@@ -20,7 +20,7 @@ Tracking my progress in Advent of Code with links to the source code for each da
 |   14   | [Day 14 Solution](https://github.com/see-quick/AdventOfCode/blob/main/_2024/src/main/java/advent/of/code/Day14.java) |
 |   15   | [Day 15 Solution](https://github.com/see-quick/AdventOfCode/blob/main/_2024/src/main/java/advent/of/code/Day15.java) |
 |   16   | [Day 16 Solution](https://github.com/see-quick/AdventOfCode/blob/main/_2024/src/main/java/advent/of/code/Day16.java) |
-|   17   |                                                                                                                      |
+|   17   | [Day 17 Solution](https://github.com/see-quick/AdventOfCode/blob/main/_2024/src/main/java/advent/of/code/Day17.java) |
 |   18   |                                                                                                                      |
 |   19   |                                                                                                                      |
 |   20   |                                                                                                                      |
