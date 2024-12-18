@@ -2,8 +2,8 @@
 
 Tracking my progress in Advent of Code 2024! Each day brings a new challenge and an opportunity to learn and grow. 💻✨
 
-| 🌟 Day |                                              📂 Solution                                              |  🏆 Status  |
-|:------:|:-----------------------------------------------------------------------------------------------------:|:-----------:|
+| 🌟 Day |                                                     📂 Solution                                                      |  🏆 Status  |
+|:------:|:--------------------------------------------------------------------------------------------------------------------:|:-----------:|
 |   1    |  [Day 1 Solution](https://github.com/see-quick/AdventOfCode/blob/main/_2024/src/main/java/advent/of/code/Day1.java)  | ✅ Completed |
 |   2    |  [Day 2 Solution](https://github.com/see-quick/AdventOfCode/blob/main/_2024/src/main/java/advent/of/code/Day2.java)  | ✅ Completed |
 |   3    |  [Day 3 Solution](https://github.com/see-quick/AdventOfCode/blob/main/_2024/src/main/java/advent/of/code/Day3.java)  | ✅ Completed |
@@ -21,13 +21,13 @@ Tracking my progress in Advent of Code 2024! Each day brings a new challenge and
 |   15   | [Day 15 Solution](https://github.com/see-quick/AdventOfCode/blob/main/_2024/src/main/java/advent/of/code/Day15.java) | ✅ Completed |
 |   16   | [Day 16 Solution](https://github.com/see-quick/AdventOfCode/blob/main/_2024/src/main/java/advent/of/code/Day16.java) | ✅ Completed |
 |   17   | [Day 17 Solution](https://github.com/see-quick/AdventOfCode/blob/main/_2024/src/main/java/advent/of/code/Day17.java) | ✅ Completed |
-|   18   | 🎁 Coming Soon!                                                                                                   | ⏳ Pending   |
-|   19   | 🎁 Coming Soon!                                                                                                   | ⏳ Pending   |
-|   20   | 🎁 Coming Soon!                                                                                                   | ⏳ Pending   |
-|   21   | 🎁 Coming Soon!                                                                                                   | ⏳ Pending   |
-|   22   | 🎁 Coming Soon!                                                                                                   | ⏳ Pending   |
-|   23   | 🎁 Coming Soon!                                                                                                   | ⏳ Pending   |
-|   24   | 🎁 Coming Soon!                                                                                                   | ⏳ Pending   |
-|   25   | 🎄 Christmas Finale! 🎄                                                                                           | ⏳ Pending   |
+|   18   | [Day 18 Solution](https://github.com/see-quick/AdventOfCode/blob/main/_2024/src/main/java/advent/of/code/Day18.java) | ✅ Completed |
+|   19   |                                                   🎁 Coming Soon!                                                    | ⏳ Pending   |
+|   20   |                                                   🎁 Coming Soon!                                                    | ⏳ Pending   |
+|   21   |                                                   🎁 Coming Soon!                                                    | ⏳ Pending   |
+|   22   |                                                   🎁 Coming Soon!                                                    | ⏳ Pending   |
+|   23   |                                                   🎁 Coming Soon!                                                    | ⏳ Pending   |
+|   24   |                                                   🎁 Coming Soon!                                                    | ⏳ Pending   |
+|   25   |                                               🎄 Christmas Finale! 🎄                                                | ⏳ Pending   |
 
 🎉 Stay tuned as I unwrap each day's challenge and share my solutions here!
