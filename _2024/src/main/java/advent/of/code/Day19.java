@@ -59,13 +59,24 @@ public class Day19 {
         int i = 1;
         while (i < lines.size() && lines.get(i).trim().isEmpty()) i++;
 
-        int count = 0;
+        // part 1
+//        int count = 0;
+//        for (; i < lines.size(); i++) {
+//            String design = lines.get(i).trim();
+//            if (canFormDesign(design, patterns, new HashMap<>())) count++;
+//        }
+
+//        System.out.println(count);
+
+        // part 2
+        // Compute the sum of all ways to form each design
+        long totalWays = 0;
         for (; i < lines.size(); i++) {
             String design = lines.get(i).trim();
-            if (canFormDesign(design, patterns, new HashMap<>())) count++;
+            totalWays += countWaysToFormDesign(design, patterns, new HashMap<>());
         }
 
-        System.out.println(count);
+        System.out.println(totalWays);
     }
 
     /**
@@ -89,6 +100,30 @@ public class Day19 {
         }
         memo.put(design, false);
         return false;
+    }
+
+    // part 2
+    /**
+     * Counts all distinct ways to form the given design from the available patterns.
+     *
+     * @param design   the towel design string
+     * @param patterns the list of available patterns
+     * @param memo     memoization map; keys are design substrings, values are ways to form that substring
+     * @return the number of ways to form the design
+     */
+    static long countWaysToFormDesign(String design, List<String> patterns, Map<String, Long> memo) {
+        if (design.isEmpty()) return 1;
+        if (memo.containsKey(design)) return memo.get(design);
+
+        long ways = 0;
+        for (String p : patterns) {
+            if (design.startsWith(p)) {
+                ways += countWaysToFormDesign(design.substring(p.length()), patterns, memo);
+            }
+        }
+
+        memo.put(design, ways);
+        return ways;
     }
 
 }
