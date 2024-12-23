@@ -44,10 +44,12 @@ public class Day23 {
             final Set<String> neighbors = graph.get(node);
 
             for (final String neighbor : neighbors) {
-                final Set<String> common = new HashSet<>(graph.get(neighbor));
-                // Find common neighbors
-                common.retainAll(neighbors);
-                for (final String third : common) {
+                final Set<String> commonNeighbours = new HashSet<>(graph.get(neighbor));
+
+                // Find common neighbors (intersection of two sets)
+                commonNeighbours.retainAll(neighbors);
+
+                for (final String third : commonNeighbours) {
                     final Set<String> triangle = new TreeSet<>(Arrays.asList(node, neighbor, third));
                     triangles.add(triangle); // Store unique triangle
                 }
