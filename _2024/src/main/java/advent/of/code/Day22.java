@@ -14,12 +14,12 @@ public class Day22 {
         for (String stringNumber : input) {
             long s = Long.parseLong(stringNumber);
             for(int i = 0; i < STEPS; i++){
-                s ^= (s * 64);
-                s %= MOD;
-                s ^= (s / 32);
-                s %= MOD;
-                s ^= (s * 2048);
-                s %= MOD;
+                s = s ^ (s * 64);
+                s = s % MOD;
+                s = s ^ (s / 32);
+                s = s % MOD;
+                s = s ^ (s * 2048);
+                s = s % MOD;
             }
             sum += s;
         }
