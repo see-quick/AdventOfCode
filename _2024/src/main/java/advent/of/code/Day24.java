@@ -42,7 +42,7 @@ public class Day24 {
             }
         }
 
-        // Step 2: Process gates until all are resolved
+        // Step 2: Process gates until all are resolved TODO: maybe queue-based resolution would be more optimal but wcyd
         while (!gates.isEmpty()) {
             List<String> unresolvedGates = new ArrayList<>();
             for (String gate : gates) {
