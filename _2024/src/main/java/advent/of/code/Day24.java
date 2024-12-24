@@ -1,15 +1,12 @@
 package advent.of.code;
 
-
 import java.math.BigInteger;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
-import java.util.stream.Collectors;
 
 public class Day24 {
 
@@ -68,12 +65,9 @@ public class Day24 {
         for (Integer value : resultWires.values()) {
             binaryResult.append(value);
         }
-
         // Step 5
         BigInteger decimalResult = new BigInteger(binaryResult.toString(), 2);
 
-
-        // Output the result
         System.out.println("Decimal Result: " + decimalResult);
     }
 
@@ -83,32 +77,23 @@ public class Day24 {
         final String outputWire = parts[1];
         final String[] operationParts = parts[0].split(" ");
 
-        if (operationParts.length == 1) {
-            // Direct assignment (e.g., "x00 -> z00")
-            String inputWire = operationParts[0];
-            if (wireValues.containsKey(inputWire)) {
-                wireValues.put(outputWire, wireValues.get(inputWire));
-                return true;
-            }
-        } else if (operationParts.length == 3) {
-            // Logical operation (e.g., "x00 AND y00 -> z00")
-            String wire1 = operationParts[0];
-            String operation = operationParts[1];
-            String wire2 = operationParts[2];
+        // Logical operation (e.g., "x00 AND y00 -> z00")
+        final String wire1 = operationParts[0];
+        final String op = operationParts[1];
+        final String wire2 = operationParts[2];
 
-            if (wireValues.containsKey(wire1) && wireValues.containsKey(wire2)) {
-                int operandLeft = wireValues.get(wire1);
-                int operandRight = wireValues.get(wire2);
-                int result = switch (operation) {
-                    case "AND" -> operandLeft & operandRight;
-                    case "OR" -> operandLeft | operandRight;
-                    case "XOR" -> operandLeft ^ operandRight;
-                    default -> throw new IllegalArgumentException("Unknown operation: " + operation);
-                };
+        if (wireValues.containsKey(wire1) && wireValues.containsKey(wire2)) {
+            final int operandLeft = wireValues.get(wire1);
+            final int operandRight = wireValues.get(wire2);
+            final int result = switch (op) {
+                case "AND" -> operandLeft & operandRight;
+                case "OR" -> operandLeft | operandRight;
+                case "XOR" -> operandLeft ^ operandRight;
+                default -> throw new IllegalArgumentException("Unknown operation: " + op);
+            };
 
-                wireValues.put(outputWire, result);
-                return true;
-            }
+            wireValues.put(outputWire, result);
+            return true;
         }
         return false; // Could not resolve this gate yet
     }
