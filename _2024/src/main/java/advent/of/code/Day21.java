@@ -1,329 +1,231 @@
 package advent.of.code;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class Day21 {
 
-    // Point class to represent positions on keypads
-    static class Point {
-        int row;
-        int col;
+    private static final Coord KEY_PAD_START = new Coord(2, 3);
+    private static final Coord DIR_PAD_START = new Coord(2, 0);
 
-        Point(int row, int col) {
-            this.row = row;
-            this.col = col;
-        }
+    private static final char[][] KEY_PAD = {
+        {'7', '8', '9'},
+        {'4', '5', '6'},
+        {'1', '2', '3'},
+        {'#', '0', 'A'}
+    };
 
-        // Override equals and hashCode for proper comparison in HashSets and HashMaps
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (!(o instanceof Point)) return false;
-            Point point = (Point) o;
-            return row == point.row && col == point.col;
-        }
+    private static final char[][] DIR_PAD = {
+        {'#', '^', 'A'},
+        {'<', 'v', '>'}
+    };
 
-        @Override
-        public int hashCode() {
-            return Objects.hash(row, col);
-        }
-    }
+    private static final Map<Character, Coord> DIR_PAD_COORDS = Map.of(
+        '^', new Coord(1, 0),
+        'A', new Coord(2, 0),
+        '<', new Coord(0, 1),
+        'v', new Coord(1, 1),
+        '>', new Coord(2, 1)
+    );
 
-    // Keypad class to model each keypad's layout
-    static class Keypad {
-        int rows;
-        int cols;
-        Map<Character, Point> charToPos;
-        Map<Point, Character> posToChar;
-
-        Keypad(int rows, int cols, Map<Character, Point> charToPos) {
-            this.rows = rows;
-            this.cols = cols;
-            this.charToPos = new HashMap<>(charToPos);
-            this.posToChar = new HashMap<>();
-            for (Map.Entry<Character, Point> entry : charToPos.entrySet()) {
-                this.posToChar.put(entry.getValue(), entry.getKey());
-            }
-        }
-
-        // Get position of a button
-        Point getPosition(char button) {
-            return charToPos.get(button);
-        }
-
-        // Get button at a position
-        Character getButton(Point p) {
-            return posToChar.get(p);
-        }
-
-        // Check if a move in a direction is possible from a given position
-        Point move(Point current, String direction) {
-            int newRow = current.row;
-            int newCol = current.col;
-            switch (direction) {
-                case "^":
-                    newRow -= 1;
-                    break;
-                case "v":
-                    newRow += 1;
-                    break;
-                case "<":
-                    newCol -= 1;
-                    break;
-                case ">":
-                    newCol += 1;
-                    break;
-                default:
-                    return null; // Invalid direction
-            }
-            // Check bounds
-            if (newRow < 0 || newRow >= rows || newCol < 0 || newCol >= cols)
-                return null;
-            // Check if there's a button at the new position
-            Character btn = getButton(new Point(newRow, newCol));
-            if (btn == null || btn == ' ') // ' ' represents a gap
-                return null;
-            return new Point(newRow, newCol);
-        }
-    }
-
-    // State class for BFS
-    static class State {
-        Point userPos;
-        Point robot1Pos;
-        Point robot2Pos;
-        Point numericPos;
-        int codeIndex;
-
-        State(Point userPos, Point robot1Pos, Point robot2Pos, Point numericPos, int codeIndex) {
-            this.userPos = userPos;
-            this.robot1Pos = robot1Pos;
-            this.robot2Pos = robot2Pos;
-            this.numericPos = numericPos;
-            this.codeIndex = codeIndex;
-        }
-
-        // Override equals and hashCode for proper comparison in HashSets and HashMaps
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (!(o instanceof State)) return false;
-            State state = (State) o;
-            return codeIndex == state.codeIndex &&
-                Objects.equals(userPos, state.userPos) &&
-                Objects.equals(robot1Pos, state.robot1Pos) &&
-                Objects.equals(robot2Pos, state.robot2Pos) &&
-                Objects.equals(numericPos, state.numericPos);
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(userPos, robot1Pos, robot2Pos, numericPos, codeIndex);
-        }
-    }
-
-    // BFS to find minimal sequence length for a given code
-    static int bfs(Keypad userKeypad, Keypad robot1Keypad, Keypad robot2Keypad, Keypad numericKeypad, String code) {
-        // Initialize starting positions (all at 'A')
-        Point startUser = userKeypad.getPosition('A');
-        Point startRobot1 = robot1Keypad.getPosition('A');
-        Point startRobot2 = robot2Keypad.getPosition('A');
-        Point startNumeric = numericKeypad.getPosition('A');
-
-        // Initialize BFS
-        Queue<State> queue = new LinkedList<>();
-        Set<State> visited = new HashSet<>();
-        State initialState = new State(startUser, startRobot1, startRobot2, startNumeric, 0);
-        queue.add(initialState);
-        visited.add(initialState);
-
-        // Define possible directional moves
-        String[] directions = {"^", "v", "<", ">"};
-
-        while (!queue.isEmpty()) {
-            State current = queue.poll();
-
-            // If all characters have been pressed, return the sequence length
-            if (current.codeIndex == code.length()) {
-                // The number of button presses is the number of 'A's pressed so far plus the directional moves
-                // Since each move increments the sequence length by 1
-                // To track the sequence length, we need to keep it as a separate parameter
-                // However, for simplicity, we'll modify the State to include sequence length
-                // Alternatively, we can track it with a separate BFS level
-                // To keep it simple, assume sequence length equals the number of steps taken
-                // Thus, we need to track sequence length per state
-
-                // To implement this properly, let's adjust the State class to include sequence length
-                // But for now, proceed and assume we can track it externally
-                // Since we need to return the sequence length, let's redefine the BFS accordingly
-                // Thus, break here and handle the sequence length
-                // To do this properly, redefine the BFS to track sequence length with each state
-
-                // This requires a small adjustment: include sequence length in the State
-                // Alternatively, use a parallel queue to track sequence lengths
-                // Let's implement it with a parallel queue
-
-                // Modify BFS to include sequence length
-                // To avoid confusion, let's restart the BFS with proper tracking
-
-                // This is an oversight; to correct it, implement BFS with sequence length
-
-                break; // Placeholder
-            }
-
-            // Implementing BFS with proper sequence length tracking
-        }
-
-        // Placeholder return
-        return Integer.MAX_VALUE;
-    }
-
-    // Revised BFS with sequence length tracking
-    static int bfsWithSequence(Keypad userKeypad, Keypad robot1Keypad, Keypad robot2Keypad, Keypad numericKeypad, String code) {
-        // Initialize starting positions (all at 'A')
-        Point startUser = userKeypad.getPosition('A');
-        Point startRobot1 = robot1Keypad.getPosition('A');
-        Point startRobot2 = robot2Keypad.getPosition('A');
-        Point startNumeric = numericKeypad.getPosition('A');
-
-        // Initialize BFS
-        Queue<State> queue = new LinkedList<>();
-        Set<State> visited = new HashSet<>();
-        State initialState = new State(startUser, startRobot1, startRobot2, startNumeric, 0);
-        queue.add(initialState);
-        visited.add(initialState);
-
-        // Initialize sequence length tracking
-        int sequenceLength = 0;
-
-        // Define possible directional moves
-        String[] directions = {"^", "v", "<", ">"};
-
-        while (!queue.isEmpty()) {
-            int size = queue.size();
-            for (int i = 0; i < size; i++) {
-                State current = queue.poll();
-
-                // If all characters have been pressed, return the sequence length
-                if (current.codeIndex == code.length()) {
-                    return sequenceLength;
-                }
-
-                // Try all directional moves
-                for (String dir : directions) {
-                    // Attempt to move in this direction on all directional keypads
-                    Point newUserPos = userKeypad.move(current.userPos, dir);
-                    Point newRobot1Pos = robot1Keypad.move(current.robot1Pos, dir);
-                    Point newRobot2Pos = robot2Keypad.move(current.robot2Pos, dir);
-                    // Attempting to move numeric keypad's arm is not needed, as it's controlled by Robot 2
-                    // Thus, we ignore numeric keypad's movement on directional presses
-
-                    // If any move is invalid (null), skip this directional press
-                    if (newUserPos == null || newRobot1Pos == null || newRobot2Pos == null) {
-                        continue;
-                    }
-
-                    // The numeric keypad's arm remains unchanged on directional presses
-                    Point newNumericPos = current.numericPos;
-
-                    // Create new state
-                    State newState = new State(newUserPos, newRobot1Pos, newRobot2Pos, newNumericPos, current.codeIndex);
-
-                    // If not visited, add to queue
-                    if (!visited.contains(newState)) {
-                        visited.add(newState);
-                        queue.add(newState);
-                    }
-                }
-
-                // Try pressing 'A'
-                // Pressing 'A' on the user's keypad causes the numeric keypad to press its current button
-                // So, check if the numeric keypad's current button matches the desired character
-                Character currentButton = numericKeypad.getButton(current.numericPos);
-                if (currentButton != null && currentButton == code.charAt(current.codeIndex)) {
-                    // Press 'A' to press this button
-                    // After pressing, the numeric keypad's arm remains the same
-                    State newState = new State(current.userPos, current.robot1Pos, current.robot2Pos, current.numericPos, current.codeIndex + 1);
-                    if (!visited.contains(newState)) {
-                        visited.add(newState);
-                        queue.add(newState);
-                    }
-                }
-            }
-            // Increment sequence length after processing all states at the current level
-            sequenceLength++;
-        }
-
-        // If the code cannot be typed, return a large number
-        return Integer.MAX_VALUE;
-    }
+    private static final Map<RoadDepth, Long> MEMOIZED_ROAD_DEPTH = new HashMap<>();
 
     public static void main(String[] args) {
-        // Define Numeric Keypad
-        Map<Character, Point> numericButtons = new HashMap<>();
-        numericButtons.put('7', new Point(0, 0));
-        numericButtons.put('8', new Point(0, 1));
-        numericButtons.put('9', new Point(0, 2));
-        numericButtons.put('4', new Point(1, 0));
-        numericButtons.put('5', new Point(1, 1));
-        numericButtons.put('6', new Point(1, 2));
-        numericButtons.put('1', new Point(2, 0));
-        numericButtons.put('2', new Point(2, 1));
-        numericButtons.put('3', new Point(2, 2));
-        numericButtons.put('0', new Point(3, 1));
-        numericButtons.put('A', new Point(3, 2));
-        // Note: (3,0) is a gap represented implicitly by absence in the map
+        List<String> lines = DataLoader.loadDataFromFile("_2024/src/main/java/advent/of/code/day21.txt");
+        long result = calculateTotalComplexity(lines, 2);
+        System.out.println(result);
+    }
 
-        Keypad numericKeypad = new Keypad(4, 3, numericButtons);
-
-        // Define Directional Keypad (User's, Robot1's, Robot2's)
-        Map<Character, Point> directionalButtons = new HashMap<>();
-        directionalButtons.put('^', new Point(0, 0));
-        directionalButtons.put('A', new Point(0, 1));
-        directionalButtons.put('<', new Point(1, 0));
-        directionalButtons.put('v', new Point(1, 1));
-        directionalButtons.put('>', new Point(1, 2));
-        // Note: (0,2) is a gap represented implicitly by absence in the map
-
-        Keypad userKeypad = new Keypad(2, 3, directionalButtons);
-        Keypad robot1Keypad = new Keypad(2, 3, directionalButtons);
-        Keypad robot2Keypad = new Keypad(2, 3, directionalButtons);
-
-        // Define the list of codes
-        List<String> codes = Arrays.asList("029A", "980A", "179A", "456A", "379A");
-
-        // Initialize a map to store precomputed minimal sequence lengths
-        // This avoids recomputing for duplicate codes
-        Map<String, Integer> codeToSequenceLength = new HashMap<>();
-
-        // Compute complexities
+    public static long calculateTotalComplexity(List<String> codes, int depth) {
         long totalComplexity = 0;
-
         for (String code : codes) {
-            // Extract numeric part by removing leading zeros and non-numeric characters
-            String numericPartStr = code.replaceAll("^0+", "").replaceAll("[^0-9]", "");
-            long numericPart = numericPartStr.isEmpty() ? 0 : Long.parseLong(numericPartStr);
+            long bestComplexity = findBestRobotPathComplexity(code, depth);
+            totalComplexity += bestComplexity * extractNumericCode(code);
+        }
+        return totalComplexity;
+    }
 
-            // Check if sequence length is already computed
-            int sequenceLength;
-            if (codeToSequenceLength.containsKey(code)) {
-                sequenceLength = codeToSequenceLength.get(code);
-            } else {
-                // Compute minimal sequence length using BFS
-                sequenceLength = bfsWithSequence(userKeypad, robot1Keypad, robot2Keypad, numericKeypad, code);
-                // Store in the map
-                codeToSequenceLength.put(code, sequenceLength);
-            }
+    private static long findBestRobotPathComplexity(String code, int depth) {
+        List<String> robot1Moves = findShortestPaths(code, KEY_PAD_START, KEY_PAD);
+        long bestComplexity = Long.MAX_VALUE;
+        for (String robot1Move : robot1Moves) {
+            long complexity = calculatePathComplexity(robot1Move, depth);
+            bestComplexity = Math.min(bestComplexity, complexity);
+        }
+        return bestComplexity;
+    }
 
-            // Calculate complexity
-            long complexity = (long) sequenceLength * numericPart;
-            totalComplexity += complexity;
+    private static int extractNumericCode(String code) {
+        return Integer.parseInt(code.substring(0, code.length() - 1));
+    }
 
-            // Debugging output
-            System.out.println("Code: " + code + ", Numeric Part: " + numericPart + ", Sequence Length: " + sequenceLength + ", Complexity: " + complexity);
+    private static List<String> findShortestPaths(String code, Coord start, char[][] pad) {
+        if (code.isEmpty()) {
+            return List.of("");
         }
 
-        // Output the total complexity
-        System.out.println("Total Complexity: " + totalComplexity);
+        char target = code.charAt(0);
+        List<String> allPaths = new ArrayList<>();
+
+        for (Path path : calculateShortestPaths(start, target, pad)) {
+            List<String> subPaths = findShortestPaths(code.substring(1), path.getEnd(), pad);
+            for (String subPath : subPaths) {
+                allPaths.add(path.getSteps() + "A" + subPath);
+            }
+        }
+
+        int minPathLength = allPaths.stream().mapToInt(String::length).min().orElseThrow();
+        return allPaths.stream()
+            .filter(path -> path.length() == minPathLength)
+            .distinct()
+            .collect(Collectors.toList());
+    }
+
+    private static List<Path> calculateShortestPaths(Coord start, char goal, char[][] pad) {
+        if (isButtonValid(start, pad) && getButton(start, pad) == goal) {
+            return List.of(new Path(start, ""));
+        }
+
+        Queue<Path> queue = new ArrayDeque<>(List.of(new Path(start, "")));
+        List<Path> shortestPaths = new ArrayList<>();
+        int shortestLength = Integer.MAX_VALUE;
+
+        while (!queue.isEmpty()) {
+            Path currentPath = queue.poll();
+            for (Coord neighbor : currentPath.getEnd().getNeighbors()) {
+                if (isButtonValid(neighbor, pad)) {
+                    Path nextPath = new Path(neighbor, currentPath.getSteps() + currentPath.getEnd().getDirection(neighbor));
+                    if (getButton(neighbor, pad) == goal) {
+                        if (nextPath.getSteps().length() < shortestLength) {
+                            shortestLength = nextPath.getSteps().length();
+                            shortestPaths.clear();
+                            shortestPaths.add(nextPath);
+                        } else if (nextPath.getSteps().length() == shortestLength) {
+                            shortestPaths.add(nextPath);
+                        }
+                    } else if (nextPath.getSteps().length() < shortestLength) {
+                        queue.add(nextPath);
+                    }
+                }
+            }
+        }
+
+        return shortestPaths;
+    }
+
+    private static long calculatePathComplexity(String robotMove, int depth) {
+        if (depth == 0) {
+            return robotMove.length();
+        }
+
+        RoadDepth key = new RoadDepth(robotMove, depth);
+        if (MEMOIZED_ROAD_DEPTH.containsKey(key)) {
+            return MEMOIZED_ROAD_DEPTH.get(key);
+        }
+
+        Coord currentPosition = DIR_PAD_START;
+        long totalComplexity = 0;
+
+        for (char move : robotMove.toCharArray()) {
+            long minComplexity = Long.MAX_VALUE;
+            for (String subPath : findRoads(move, currentPosition)) {
+                minComplexity = Math.min(minComplexity, calculatePathComplexity(subPath, depth - 1));
+            }
+            totalComplexity += minComplexity;
+            currentPosition = DIR_PAD_COORDS.get(move);
+        }
+
+        MEMOIZED_ROAD_DEPTH.put(key, totalComplexity);
+        return totalComplexity;
+    }
+
+    private static List<String> findRoads(char target, Coord current) {
+        return calculateShortestPaths(current, target, DIR_PAD).stream()
+            .map(path -> path.getSteps() + "A")
+            .toList();
+    }
+
+    private static boolean isButtonValid(Coord coord, char[][] pad) {
+        return coord.getY() >= 0 && coord.getY() < pad.length && coord.getX() >= 0 && coord.getX() < pad[0].length && pad[coord.getY()][coord.getX()] != '#';
+    }
+
+    private static char getButton(Coord coord, char[][] pad) {
+        return pad[coord.getY()][coord.getX()];
+    }
+
+    static class Coord {
+        private final int x;
+        private final int y;
+
+        Coord(int x, int y) {
+            this.x = x;
+            this.y = y;
+        }
+
+        int getX() {
+            return x;
+        }
+
+        int getY() {
+            return y;
+        }
+
+        List<Coord> getNeighbors() {
+            return List.of(
+                new Coord(x + 1, y),
+                new Coord(x, y + 1),
+                new Coord(x - 1, y),
+                new Coord(x, y - 1)
+            );
+        }
+
+        char getDirection(Coord other) {
+            if (x < other.getX()) return '>';
+            if (x > other.getX()) return '<';
+            if (y < other.getY()) return 'v';
+            if (y > other.getY()) return '^';
+            throw new IllegalArgumentException("Invalid direction: " + this + " to " + other);
+        }
+    }
+
+    static class Path {
+        private final Coord end;
+        private final String steps;
+
+        Path(Coord end, String steps) {
+            this.end = end;
+            this.steps = steps;
+        }
+
+        Coord getEnd() {
+            return end;
+        }
+
+        String getSteps() {
+            return steps;
+        }
+    }
+
+    static class RoadDepth {
+        private final String road;
+        private final int depth;
+
+        RoadDepth(String road, int depth) {
+            this.road = road;
+            this.depth = depth;
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(road, depth);
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj) return true;
+            if (obj == null || getClass() != obj.getClass()) return false;
+            RoadDepth other = (RoadDepth) obj;
+            return depth == other.depth && Objects.equals(road, other.road);
+        }
     }
 }

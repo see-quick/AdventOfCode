@@ -24,7 +24,7 @@ Tracking my progress in Advent of Code 2024! Each day brings a new challenge and
 |   18   | [Day 18 Solution](https://github.com/see-quick/AdventOfCode/blob/main/_2024/src/main/java/advent/of/code/Day18.java) | ✅ Completed |
 |   19   | [Day 19 Solution](https://github.com/see-quick/AdventOfCode/blob/main/_2024/src/main/java/advent/of/code/Day19.java) | ✅ Completed |
 |   20   | [Day 20 Solution](https://github.com/see-quick/AdventOfCode/blob/main/_2024/src/main/java/advent/of/code/Day20.java) | ✅ Completed |
-|   21   |                                                   🎁 Coming Soon!                                                    |  ⏳ Pending  |
+|   20   | [Day 21 Solution](https://github.com/see-quick/AdventOfCode/blob/main/_2024/src/main/java/advent/of/code/Day21.java) | ✅ Completed |
 |   22   | [Day 22 Solution](https://github.com/see-quick/AdventOfCode/blob/main/_2024/src/main/java/advent/of/code/Day22.java) | ✅ Completed |
 |   23   | [Day 23 Solution](https://github.com/see-quick/AdventOfCode/blob/main/_2024/src/main/java/advent/of/code/Day23.java) | ✅ Completed |
 |   24   | [Day 24 Solution](https://github.com/see-quick/AdventOfCode/blob/main/_2024/src/main/java/advent/of/code/Day24.java) | ✅ Completed |
