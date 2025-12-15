@@ -12,7 +12,7 @@ Tracking my progress in Advent of Code 2025! This year I'm using **Rust** for th
 |   6    | [Day 6 Solution](https://github.com/see-quick/AdventOfCode/blob/main/_2025/src/day06.rs) |  ✅ Completed   |
 |   7    | [Day 7 Solution](https://github.com/see-quick/AdventOfCode/blob/main/_2025/src/day07.rs) |  ✅ Completed   |
 |   8    | [Day 8 Solution](https://github.com/see-quick/AdventOfCode/blob/main/_2025/src/day08.rs) |  ✅ Completed   |
-|   8    | [Day 9 Solution](https://github.com/see-quick/AdventOfCode/blob/main/_2025/src/day09.rs) |  ✅ Completed   |
+|   9    | [Day 9 Solution](https://github.com/see-quick/AdventOfCode/blob/main/_2025/src/day09.rs) |  ✅ Completed   |
 |   10   |                                            -                                             | 🔜 Coming Soon |
 |   11   |                                            -                                             | 🔜 Coming Soon |
 |   12   |                                            -                                             | 🔜 Coming Soon |
