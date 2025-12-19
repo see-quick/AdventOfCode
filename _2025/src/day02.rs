@@ -51,6 +51,27 @@ fn is_repeated_id(n: u64) -> bool {
     first_half == second_half
 }
 
+fn is_repeated_pattern(n: u64) -> bool {
+    let s = n.to_string();
+    let len = s.len();
+
+    if len < 2 {
+        return false;
+    }
+
+    // Check all possible pattern lengths (must divide len and repeat at least twice)
+    for pattern_len in 1..=len / 2 {
+        if len % pattern_len == 0 {
+            let pattern = &s[..pattern_len];
+            if pattern.repeat(len / pattern_len) == s {
+                return true;
+            }
+        }
+    }
+
+    false
+}
+
 struct RangeId {
     start_id: u64,
     end_id: u64
@@ -99,8 +120,17 @@ impl Day for Day02  {
     }
 
     fn part2(&self) -> Self::Output2 {
-        todo!()
-    }}
+        let mut sum: u64 = 0;
+        for range in &self.range_ids {
+            for id in range.start_id..=range.end_id {
+                if is_repeated_pattern(id) {
+                    sum += id;
+                }
+            }
+        }
+        sum
+    }
+}
 
 fn main() {
     run::<Day02>("src/input/day02.txt");

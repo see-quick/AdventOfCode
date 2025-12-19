@@ -1,3 +1,4 @@
+use _2025::{Day, run};
 // High Level Design
 //
 // So basically the problem is that we have this input:
@@ -23,62 +24,114 @@
 //  4. print sum! :)
 //
 //  Complexity: T(N*M) where N = lines, M = digits per line. S(M) for storing digits.
-// 
+//
 //
 // Sum: 15639 => too low (hmmm...)
-// ... ah 
-//
-fn main() {
-    let contents = std::fs::read_to_string("src/input/day03.txt")
-        .expect("Should have been able to read the file");
+// ... ah
 
-    let mut sum: u64 = 0;
+pub struct Day03 {
+    lines: Vec<Vec<u8>>,
+}
 
-    for line in contents.lines() {
-        let line = line.trim();
-        if line.is_empty() {
-            continue;
-        }
+impl Day for Day03 {
+    type Output1 = u64;
+    type Output2 = u64;
 
-        let digits: Vec<u8> = line
-            .chars()
-            .filter_map(|c| c.to_digit(10).map(|d| d as u8))
+    fn parse(input: &str) -> Self {
+        let lines = input
+            .lines()
+            .filter_map(|line| {
+                let line = line.trim();
+                if line.is_empty() {
+                    return None;
+                }
+
+                let digits: Vec<u8> = line
+                    .chars()
+                    .filter_map(|c| c.to_digit(10).map(|d| d as u8))
+                    .collect();
+
+                if digits.is_empty() {
+                    None
+                } else {
+                    Some(digits)
+                }
+            })
             .collect();
 
-        if digits.is_empty() {
-            continue;
-        }
-
-        // Find the maximum digit value
-        let max_digit = *digits.iter().max().unwrap();
-
-        // Option A: Use max digit as FIRST digit (first occurrence), find best second after it
-        let first_max_pos = digits.iter().position(|&d| d == max_digit).unwrap();
-        let option_a = if first_max_pos < digits.len() - 1 {
-            let second = digits.iter().skip(first_max_pos + 1).max().copied().unwrap_or(0);
-            (max_digit as u64) * 10 + (second as u64)
-        } else {
-            0 // Can't use max as first if it's the last digit
-        };
-
-        // Option B: Use max digit as SECOND digit (last occurrence), find best first before it
-        let last_max_pos = digits.iter().rposition(|&d| d == max_digit).unwrap();
-        let option_b = if last_max_pos > 0 {
-            let first = digits.iter().take(last_max_pos).max().copied().unwrap_or(0);
-            (first as u64) * 10 + (max_digit as u64)
-        } else {
-            0 // Can't use max as second if it's the first digit
-        };
-
-        // Pick the larger option
-        let two_digit_number = option_a.max(option_b);
-
-        println!("Option A (max first): {}, Option B (max second): {} => {}", option_a, option_b, two_digit_number);
-
-        println!("Two digit number: {}", two_digit_number);
-
-        sum += two_digit_number;
+        Self { lines }
     }
 
-    println!("Sum: {}", sum);
+    fn part1(&self) -> Self::Output1 {
+        let mut sum: u64 = 0;
+
+        for digits in &self.lines {
+            // Find the maximum digit value
+            let max_digit = *digits.iter().max().unwrap();
+
+            // Option A: Use max digit as FIRST digit (first occurrence), find best second after it
+            let first_max_pos = digits.iter().position(|&d| d == max_digit).unwrap();
+            let option_a = if first_max_pos < digits.len() - 1 {
+                let second = digits.iter().skip(first_max_pos + 1).max().copied().unwrap_or(0);
+                (max_digit as u64) * 10 + (second as u64)
+            } else {
+                0 // Can't use max as first if it's the last digit
+            };
+
+            // Option B: Use max digit as SECOND digit (last occurrence), find best first before it
+            let last_max_pos = digits.iter().rposition(|&d| d == max_digit).unwrap();
+            let option_b = if last_max_pos > 0 {
+                let first = digits.iter().take(last_max_pos).max().copied().unwrap_or(0);
+                (first as u64) * 10 + (max_digit as u64)
+            } else {
+                0 // Can't use max as second if it's the first digit
+            };
+
+            // Pick the larger option
+            let two_digit_number = option_a.max(option_b);
+
+            sum += two_digit_number;
+        }
+
+        sum
+    }
+
+    fn part2(&self) -> Self::Output2 {
+        const K: usize = 12;
+        let mut sum: u64 = 0;
+
+        for digits in &self.lines {
+            let n = digits.len();
+            if n < K {
+                continue;
+            }
+
+            // basically monotonic stack greedy algorithm that select the 12 largest sub-sequence here :)
+            let mut to_remove = n - K;
+            let mut stack: Vec<u8> = Vec::with_capacity(K);
+
+            for &digit in digits {
+                while to_remove > 0 && !stack.is_empty() && *stack.last().unwrap() < digit {
+                    stack.pop();
+                    to_remove -= 1;
+                }
+                stack.push(digit);
+            }
+
+            // here we add condition that if we still have digits to remove (desceingding order)
+            while to_remove > 0 && stack.len() > K {
+                stack.pop();
+                to_remove -= 1;
+            }
+
+            let number = stack.iter().take(K).fold(0u64, |acc, &d| acc * 10 + d as u64);
+            sum += number;
+        }
+
+        sum
+    }
+}
+
+fn main() {
+    run::<Day03>("src/input/day03.txt");
 }
