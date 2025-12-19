@@ -1,3 +1,4 @@
+use _2025::{Day, run};
 // Top Level Design
 //
 // We have single line input where there are numbers i.e., 11-22,95-115 ...
@@ -50,30 +51,57 @@ fn is_repeated_id(n: u64) -> bool {
     first_half == second_half
 }
 
-fn main() {
-    let contents = std::fs::read_to_string("src/input/day02.txt")
-        .expect("Should have been able to read the file");
+struct RangeId {
+    start_id: u64,
+    end_id: u64
+}
 
-    let line = contents.lines().next().unwrap_or("").trim();
+pub struct Day02 {
+    range_ids: Vec<RangeId>
+}
 
-    let mut sum: u64 = 0;
+impl Day for Day02  {
+    type Output1 = u64;
+    type Output2 = u64;
 
-    for range_str in line.split(',') {
-        let parts: Vec<&str> = range_str.split('-').collect();
-        if parts.len() != 2 {
-            // ignoring parts not having dash
-            continue;
-        }
+    fn parse(input: &str) -> Self {
+        let range_ids = input
+            .lines()
+            .filter(|line| !line.trim().is_empty())
+            .flat_map(|line| {
+                line.split(',').filter_map(|range_str| {
+                    let parts: Vec<&str> = range_str.split('-').collect();
+                    if parts.len() != 2 {
+                        return None;
+                    }
 
-        let start: u64 = parts[0].trim().parse().expect("Invalid start number");
-        let end: u64 = parts[1].trim().parse().expect("Invalid end number");
+                    let start_id = parts[0].trim().parse().expect("Invalid start number");
+                    let end_id = parts[1].trim().parse().expect("Invalid end number");
 
-        for id in start..=end {
-            if is_repeated_id(id) {
-                sum += id;
-            }
-        }
+                    Some(RangeId { start_id, end_id })
+                })
+            })
+            .collect();
+
+        Self { range_ids }
     }
 
-    println!("Sum of invalid IDs: {}", sum);
+    fn part1(&self) -> Self::Output1 {
+        let mut sum: u64 = 0;
+        for range in &self.range_ids {
+            for id in range.start_id..=range.end_id {
+                if is_repeated_id(id) {
+                    sum += id;
+                }
+            }
+        }
+        sum
+    }
+
+    fn part2(&self) -> Self::Output2 {
+        todo!()
+    }}
+
+fn main() {
+    run::<Day02>("src/input/day02.txt");
 } 

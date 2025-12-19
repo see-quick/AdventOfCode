@@ -1,3 +1,4 @@
+use _2025::{Day, run};
 // Top-level design
 //
 // So we start with number 50, and in the input.txt we have items in each row like:
@@ -12,8 +13,6 @@
 // if we plus 90 + 90 then go 80 etc.
 //
 // Overall algorithm should be T(N) and S(1).
-
-use _2025::{Day, run};
 
 const UNIVERSE_SIZE: i32 = 100;
 const START_POSITION: i32 = 50;
