@@ -13,38 +13,114 @@
 //
 // Overall algorithm should be T(N) and S(1).
 
+use _2025::{Day, run};
+
 const UNIVERSE_SIZE: i32 = 100;
 const START_POSITION: i32 = 50;
 
-fn main() {
-    let contents = std::fs::read_to_string("src/input/day01.txt")
-        .expect("Should have been able to read the file");
+#[derive(Clone, Copy)]
+enum Direction {
+    Left,
+    Right,
+}
 
-    let mut position = START_POSITION;
-    let mut zero_count = 0;
+struct Rotation {
+    direction: Direction,
+    steps: i32,
+}
 
-    for line in contents.lines() {
-        let line = line.trim();
-        if line.is_empty() {
-            continue;
-        }
+pub struct Day01 {
+    rotations: Vec<Rotation>,
+}
 
-        let direction = &line[0..1];
-        let value: i32 = line[1..].parse().expect("Invalid number in input");
+impl Day for Day01 {
+    type Output1 = i32;
+    type Output2 = i32;
 
-        match direction {
-            "L" => position -= value,
-            "R" => position += value,
-            _ => panic!("Unknown direction: {}", direction),
-        }
+    fn parse(input: &str) -> Self {
+        let rotations = input
+            .lines()
+            .filter_map(|line| {
+                let line = line.trim();
+                if line.is_empty() {
+                    return None;
+                }
 
-        // Wrap around the circular buffer (modulo that handles negatives)
-        position = ((position % UNIVERSE_SIZE) + UNIVERSE_SIZE) % UNIVERSE_SIZE;
+                let direction = match &line[0..1] {
+                    "L" => Direction::Left,
+                    "R" => Direction::Right,
+                    d => panic!("Unknown direction: {}", d),
+                };
+                let steps: i32 = line[1..].parse().expect("Invalid number in input");
 
-        if position == 0 {
-            zero_count += 1;
-        }
+                Some(Rotation { direction, steps })
+            })
+            .collect();
+
+        Self { rotations }
     }
 
-    println!("Times we reached 0: {}", zero_count);
+    /// Part 1: Count how many times the dial ends at 0 after each rotation
+    fn part1(&self) -> Self::Output1 {
+        let mut position = START_POSITION;
+        let mut zero_count = 0;
+
+        for rot in &self.rotations {
+            match rot.direction {
+                Direction::Left => position -= rot.steps,
+                Direction::Right => position += rot.steps,
+            }
+
+            position = ((position % UNIVERSE_SIZE) + UNIVERSE_SIZE) % UNIVERSE_SIZE;
+
+            if position == 0 {
+                zero_count += 1;
+            }
+        }
+
+        zero_count
+    }
+
+    /// Part 2: Count how many times the dial passes through 0 during any rotation
+    fn part2(&self) -> Self::Output2 {
+        let mut position = START_POSITION;
+        let mut zero_count = 0;
+
+        for rot in &self.rotations {
+            zero_count += count_zero_crossings(position, rot.direction, rot.steps);
+
+            match rot.direction {
+                Direction::Left => position -= rot.steps,
+                Direction::Right => position += rot.steps,
+            }
+            position = ((position % UNIVERSE_SIZE) + UNIVERSE_SIZE) % UNIVERSE_SIZE;
+        }
+
+        zero_count
+    }
+}
+
+fn main() {
+    run::<Day01>("src/input/day01.txt");
+}
+
+fn count_zero_crossings(position: i32, direction: Direction, steps: i32) -> i32 {
+    if steps <= 0 {
+        return 0;
+    }
+
+    let first_k = match direction {
+        Direction::Right => {
+            if position == 0 { UNIVERSE_SIZE } else { UNIVERSE_SIZE - position }
+        }
+        Direction::Left => {
+            if position == 0 { UNIVERSE_SIZE } else { position }
+        }
+    };
+
+    if steps >= first_k {
+        (steps - first_k) / UNIVERSE_SIZE + 1
+    } else {
+        0
+    }
 }
