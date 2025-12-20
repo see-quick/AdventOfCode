@@ -1,3 +1,5 @@
+use _2025::{Day, run};
+
 // High Level Design
 //
 // So we have this input:
@@ -46,65 +48,102 @@
 //             - Other variables (counters, indices): O(1)
 //             - Total: O(R * C)
 //
-//
+// In Part 2, iteratively remove all accessible rolls until no more can be removed...so each iteration
+//  i find all rolls with < 4 adjacent neighbours => remove them all at once. And we do it untul no more
+//  rolls can be removed. Finally we need to return total count of removed rolls
 
-fn main() {
-    let contents = std::fs::read_to_string("src/input/day04.txt")
-        .expect("Should have been able to read the file");
+// 8 adjacent directions: up, down, left, right, and 4 diagonals
+const DIRECTIONS: [(i32, i32); 8] = [
+    (-1, -1), (-1, 0), (-1, 1),  // top-left, top, top-right
+    (0, -1),           (0, 1),   // left, right
+    (1, -1),  (1, 0),  (1, 1),   // bottom-left, bottom, bottom-right
+];
 
-    // 1. Parse input into a 2D grid
-    let grid: Vec<Vec<char>> = contents
-        .lines()
-        .filter(|line| !line.trim().is_empty())
-        .map(|line| line.chars().collect())
-        .collect();
+pub struct Day04 {
+    grid: Vec<Vec<char>>,
+}
 
-    let rows = grid.len();
-    let cols = if rows > 0 { grid[0].len() } else { 0 };
+impl Day04 {
+    fn count_adjacent_rolls(&self, grid: &[Vec<char>], row: usize, col: usize) -> usize {
+        let rows = grid.len();
+        let cols = if rows > 0 { grid[0].len() } else { 0 };
+        let mut count = 0;
 
-    // 8 adjacent directions: up, down, left, right, and 4 diagonals
-    let directions: [(i32, i32); 8] = [
-        (-1, -1), (-1, 0), (-1, 1),  // top-left, top, top-right
-        (0, -1),           (0, 1),   // left, right
-        (1, -1),  (1, 0),  (1, 1),   // bottom-left, bottom, bottom-right
-    ];
+        for (dr, dc) in DIRECTIONS.iter() {
+            let new_row = row as i32 + dr;
+            let new_col = col as i32 + dc;
 
-    let mut accessible_count = 0;
-
-    // 2. Go through each position in the grid
-    for row in 0..rows {
-        for col in 0..cols {
-            // Only check positions with rolls of paper '@'
-            if grid[row][col] != '@' {
-                continue;
-            }
-
-            // Count adjacent rolls of paper
-            let mut adjacent_rolls = 0;
-
-            for (dr, dc) in directions.iter() {
-                let new_row = row as i32 + dr;
-                let new_col = col as i32 + dc;
-
-                // Check bounds
-                if new_row >= 0 && new_row < rows as i32 && new_col >= 0 && new_col < cols as i32 {
-                    if grid[new_row as usize][new_col as usize] == '@' {
-                        adjacent_rolls += 1;
-                        // Early break: if we already have 4+ adjacent rolls, no need to check more
-                        if adjacent_rolls >= 4 {
-                            break;
-                        }
+            if new_row >= 0 && new_row < rows as i32 && new_col >= 0 && new_col < cols as i32 {
+                if grid[new_row as usize][new_col as usize] == '@' {
+                    count += 1;
+                    if count >= 4 {
+                        break;
                     }
                 }
             }
-
-            // If fewer than 4 adjacent rolls, forklift can access this roll
-            if adjacent_rolls < 4 {
-                accessible_count += 1;
-            }
         }
+        count
     }
 
-    // 3. Print result
-    println!("Rolls of paper accessible by forklift: {}", accessible_count);
+    fn find_accessible_rolls(&self, grid: &[Vec<char>]) -> Vec<(usize, usize)> {
+        let rows = grid.len();
+        let cols = if rows > 0 { grid[0].len() } else { 0 };
+        let mut accessible = Vec::new();
+
+        for row in 0..rows {
+            for col in 0..cols {
+                if grid[row][col] == '@' {
+                    let adjacent = self.count_adjacent_rolls(grid, row, col);
+                    if adjacent < 4 {
+                        accessible.push((row, col));
+                    }
+                }
+            }
+        }
+        accessible
+    }
+}
+
+impl Day for Day04 {
+    type Output1 = usize;
+    type Output2 = usize;
+
+    fn parse(input: &str) -> Self {
+        let grid: Vec<Vec<char>> = input
+            .lines()
+            .filter(|line| !line.trim().is_empty())
+            .map(|line| line.chars().collect())
+            .collect();
+
+        Self { grid }
+    }
+
+    fn part1(&self) -> Self::Output1 {
+        self.find_accessible_rolls(&self.grid).len()
+    }
+
+    fn part2(&self) -> Self::Output2 {
+        let mut grid = self.grid.clone();
+        let mut total_removed = 0;
+
+        loop {
+            let accessible = self.find_accessible_rolls(&grid);
+            if accessible.is_empty() {
+                break;
+            }
+
+            // Remove all accessible rolls at once
+            for (row, col) in &accessible {
+                grid[*row][*col] = '.';
+            }
+
+            total_removed += accessible.len();
+        }
+
+        total_removed
+    }
+}
+
+fn main() {
+    run::<Day04>("src/input/day04.txt");
 }
